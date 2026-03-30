@@ -1,23 +1,55 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
+import 'tela2.dart';
 
-class Tela1 extends StatelessWidget {
-  const Tela1({super.key});
+class tela1 extends StatelessWidget {
+  const tela1({super.key});
 
-  Widget escolhaBotao(String caminhoImagem) {
-    return InkWell(
-      onTap: () {
-        print("Clicou em: $caminhoImagem");
-      },
-      borderRadius: BorderRadius.circular(50),
-      child: Container(
-        width: 80,
-        height: 80,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.grey, width: 2),
+  final List<String> opcoes = const ["pedra", "papel", "tesoura"];
+
+  String verificarResultado(int jogador, int app) {
+    if (jogador == app) return "empate";
+
+    switch (jogador) {
+      case 0: // pedra
+        return (app == 2) ? "vitoria" : "derrota";
+      case 1: // papel
+        return (app == 0) ? "vitoria" : "derrota";
+      case 2: // tesoura
+        return (app == 1) ? "vitoria" : "derrota";
+      default:
+        return "erro";
+    }
+  }
+
+  void jogar(BuildContext context, int escolhaJogador) {
+    final random = Random();
+    int escolhaApp = random.nextInt(3);
+
+    String resultado = verificarResultado(escolhaJogador, escolhaApp);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => tela2(
+          escolhaJogador: escolhaJogador,
+          escolhaApp: escolhaApp,
+          resultado: resultado,
         ),
-        child: Center(
-          child: Image.asset(caminhoImagem, width: 40),
+      ),
+    );
+  }
+
+  Widget escolhaBotao(BuildContext context, int index) {
+    return InkWell(
+      onTap: () => jogar(context, index),
+      borderRadius: BorderRadius.circular(50),
+      child: ClipOval(
+        child: Image.asset(
+          "assets/images/${opcoes[index]}.png",
+          width: 80,
+          height: 80,
+          fit: BoxFit.cover,
         ),
       ),
     );
@@ -27,33 +59,26 @@ class Tela1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Pedra,Papel, Tesoura"),
+        title: const Text("Pedra, Papel, Tesoura"),
         backgroundColor: Colors.red,
+        centerTitle: true,
       ),
       backgroundColor: Colors.grey[300],
       body: Column(
         children: [
           const SizedBox(height: 40),
 
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.grey, width: 2),
-            ),
-            child: Center(
-              child: Image.asset(
-                "assets/images/padrao.png",
-                width: 60,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.error);
-                },
-              ),
+          // imagem padrão do app
+          ClipOval(
+            child: Image.asset(
+              "assets/images/padrao.png",
+              width: 120,
+              height: 120,
+              fit: BoxFit.cover,
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
 
           const Text(
             "Escolha do APP",
@@ -65,9 +90,9 @@ class Tela1 extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              escolhaBotao("assets/images/pedra.png"),
-              escolhaBotao("assets/images/papel.png"),
-              escolhaBotao("assets/images/tesoura.png"),
+              escolhaBotao(context, 0),
+              escolhaBotao(context, 1),
+              escolhaBotao(context, 2),
             ],
           ),
         ],

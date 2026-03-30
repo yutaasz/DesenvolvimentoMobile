@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
 
-class Tela2 extends StatelessWidget {
-  const Tela2({super.key});
+class tela2 extends StatelessWidget {
+  final int escolhaJogador;
+  final int escolhaApp;
+  final String resultado;
+
+  const tela2({
+    super.key,
+    required this.escolhaJogador,
+    required this.escolhaApp,
+    required this.resultado,
+  });
+
+  final List<String> opcoes = const ["pedra", "papel", "tesoura"];
 
   Widget circuloComImagem(String caminhoImagem) {
     return Container(
@@ -20,35 +30,36 @@ class Tela2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> opcoes = ["pedra", "papel", "tesoura"];
-    // 🔽 SUA ESCOLHA (troca manualmente se quiser testar)
-    final String suaEscolha = "pedra";
-
-    // 🔽 escolha aleatória do app
-    final String escolhaApp = opcoes[Random().nextInt(3)];
-
-    // 🔽 lógica do jogo
-    String resultado;
+    // 🔽 definir imagem e texto do resultado
     String imagemResultado;
+    String textoResultado;
 
-    if (suaEscolha == escolhaApp) {
-      resultado = "Empate";
-      imagemResultado = "assets/images/icons8-aperto-de-mãos-100.png";
-    } else if (
-    (suaEscolha == "pedra" && escolhaApp == "tesoura") ||
-        (suaEscolha == "papel" && escolhaApp == "pedra") ||
-        (suaEscolha == "tesoura" && escolhaApp == "papel")) {
-      resultado = "Você venceu";
-      imagemResultado = "assets/images/icons8-vitória-48.png";
-    } else {
-      resultado = "Você perdeu";
-      imagemResultado = "assets/images/icons8-perder-48.png";
+    switch (resultado) {
+      case "vitoria":
+        imagemResultado = "assets/images/icons8-vitória-48.png";
+        textoResultado = "Você venceu!";
+        break;
+
+      case "derrota":
+        imagemResultado = "assets/images/icons8-perder-48.png";
+        textoResultado = "Você perdeu!";
+        break;
+
+      case "empate":
+        imagemResultado = "assets/images/icons8-aperto-de-mãos-100.png";
+        textoResultado = "Empate!";
+        break;
+
+      default:
+        imagemResultado = "";
+        textoResultado = "Erro";
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Pedra,Papel, Tesoura"),
+        title: const Text("Pedra, Papel, Tesoura"),
         backgroundColor: Colors.red,
+        centerTitle: true,
       ),
       backgroundColor: Colors.grey[300],
       body: Column(
@@ -56,7 +67,7 @@ class Tela2 extends StatelessWidget {
           const SizedBox(height: 30),
 
           // Escolha do APP
-          circuloComImagem("assets/images/$escolhaApp.png"),
+          circuloComImagem("assets/images/${opcoes[escolhaApp]}.png"),
           const SizedBox(height: 10),
           const Text(
             "Escolha do APP",
@@ -66,7 +77,7 @@ class Tela2 extends StatelessWidget {
           const SizedBox(height: 30),
 
           // Sua escolha
-          circuloComImagem("assets/images/$suaEscolha.png"),
+          circuloComImagem("assets/images/${opcoes[escolhaJogador]}.png"),
           const SizedBox(height: 10),
           const Text(
             "Sua Escolha",
@@ -81,7 +92,7 @@ class Tela2 extends StatelessWidget {
           const SizedBox(height: 10),
 
           Text(
-            resultado,
+            textoResultado,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
 
